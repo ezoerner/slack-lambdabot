@@ -10,26 +10,26 @@ module Main (main) where
 import Codec.Binary.UTF8.String (decodeString)
 import Control.Applicative ((<|>))
 import Control.DeepSeq (NFData)
-import Control.Lens ((^.), Getter, to, use)
+import Control.Lens ((^.), Getter, to)
 import Control.Monad.IO.Class (liftIO)
 import Data.Functor (void)
+import Data.Functor.Identity (Identity(Identity))
 import Data.Maybe (fromMaybe)
 import Data.Monoid ((<>))
-import Data.Text (Text, dropWhile, pack, unpack, stripPrefix)
+import Data.Text (Text, pack, unpack)
 import Data.Text.Lazy (toStrict)
 import Data.Text.Lazy.Builder (toLazyText)
 import GHC.Generics (Generic)
 import HTMLEntities.Decoder (htmlEncodedText)
 import Lambdabot.Main
 import Modules (modulesInfo)
-import Prelude hiding (dropWhile, filter)
+import Prelude hiding (filter)
 import System.Environment (lookupEnv)
 import System.IO.Silently (capture)
 import Text.Parsec (anyChar, between, char, eof, many, noneOf, oneOf, optional,
   parse, skipMany, skipMany1, string, try)
 import Text.Parsec.Text (Parser)
-import Web.Slack (Event(Message), Slack, SlackBot, SlackConfig(..), getId,
-  runBot, selfUserId, session, slackSelf)
+import Web.Slack (Event(Message), SlackBot, SlackConfig(..), runBot)
 import Web.Slack.Message (sendMessage)
 
 -------------------------------------------------------------------------------
@@ -51,7 +51,7 @@ expression = to $ \case
 -- TODO(mroberts): Remove me.
 prefix :: Getter Command Text
 prefix = to $ \case
-  Eval _ -> "eval"
+  Eval _ -> ">"
   Type _ -> "type"
 
 -- | Parse a 'Command'.
@@ -118,7 +118,7 @@ parseCommand = try parseEval <|> parseType where
 lambdabot :: Command -> IO String
 lambdabot command = do
   let request = void $ lambdabotMain modulesInfo
-        [onStartupCmds :=> [unpack $ (command ^. prefix) <> " " <> (command ^. expression)]]
+        [onStartupCmds :=> Identity [unpack $ (command ^. prefix) <> " " <> (command ^. expression)]]
   (response, _) <- capture request
   return response
 
@@ -138,30 +138,15 @@ envMkSlackConfig key
 mkSlackConfig :: String -> SlackConfig
 mkSlackConfig apiToken = SlackConfig { _slackApiToken = apiToken }
 
--- | Get a message if it is for \"me\".
-getMessageForMe :: Text -> Slack a (Maybe Text)
-getMessageForMe message = do
-  myId <- use $ session . slackSelf . selfUserId . getId
-  let atMyId = "<@" <> myId <> ">"
-  return $  dropWhile (\c -> c == ':' || c == ' ')
-        <$> stripPrefix atMyId message
-
 -- | Construct a @SlackBot@ from a name. This bot will pass messages addressed
 -- to it to 'lambdabot' and relay 'lambdabot''s response.
 slackBot :: SlackBot a
 slackBot (Message cid _ someMessage _ _ _) = do
-  messageForMe <- getMessageForMe someMessage
-  -- let shouldReportParseError = isJust messageForMe
-  let message = fromMaybe someMessage messageForMe
-  let parsedCommand = parse parseCommand "" $ decodeHtml message
-  case parsedCommand of
-    Left error' ->
-      -- when shouldReportParseError . sendMessage cid . pack $ show error'
-      sendMessage cid . pack $ show error'
+  case parse parseCommand "" (decodeHtml someMessage) of
+    Left _ -> return ()
     Right command -> do
       rawResponse <- liftIO (pack . decodeString <$> lambdabot command)
-      let response = "```\n" <> rawResponse <> "```"
-      sendMessage cid response
+      sendMessage cid $ "```\n" <> rawResponse <> "```"
 slackBot _ = return ()
 
 decodeHtml :: Text -> Text

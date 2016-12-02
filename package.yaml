@@ -1,0 +1,62 @@
+name: slack-lambdabot
+version: '2.0.0'
+maintainer: Dan Fithian
+license: AllRightsReserved
+
+default-extensions:
+  - DeriveDataTypeable
+  - EmptyDataDecls
+  - FlexibleContexts
+  - FlexibleInstances
+  - GADTs
+  - GeneralizedNewtypeDeriving
+  - LambdaCase
+  - MultiParamTypeClasses
+  - NamedFieldPuns
+  - NoMonomorphismRestriction
+  - OverloadedStrings
+  - PackageImports
+  - QuasiQuotes
+  - RankNTypes
+  - RecordWildCards
+  - ScopedTypeVariables
+  - StandaloneDeriving
+  - TemplateHaskell
+  - TupleSections
+  - TypeFamilies
+  - ViewPatterns
+
+ghc-options:
+  - -Wall
+  - -Werror
+  - -fwarn-tabs
+  - -threaded
+  - -O2
+  - -rtsopts
+  - -with-rtsopts=-N
+  - -with-rtsopts=-T
+
+dependencies:
+  - base
+  - deepseq
+  - html-entities
+  - lambdabot-core
+  - lambdabot-haskell-plugins
+  - lambdabot-irc-plugins
+  - lambdabot-misc-plugins
+  - lambdabot-novelty-plugins
+  - lambdabot-reference-plugins
+  - lambdabot-social-plugins
+  - lambdabot-trusted
+  - lens
+  - parsec
+  - silently
+  - slack-api
+  - text
+  - transformers
+  - utf8-string
+
+executables:
+  slack-lambdabot:
+    main: main.hs
+    source-dirs: src
