@@ -1,11 +1,11 @@
-lts=6.26
-ghc=7.10.3
 docker=docker-container
-stack_bin_dir=.stack-work/install/x86_64-linux-*/lts-$(lts)/$(ghc)/bin
+stack_bin_dir=$(shell stack path --local-install-root)/bin
 
-docker_tag ?= local
+# this should be overridden with full docker image name, e.g. ezoerner/slack-lambdabot:1.0
+IMAGE_NAME ?= slack-lambdabot
 
-all: clean setup build container
+
+all: check-token clean setup build container
 
 clean:
 	stack --verbosity silent --no-docker build --dry-run --prefetch && stack clean
@@ -16,9 +16,14 @@ setup:
 build:
 	stack --verbosity silent --no-docker build --dry-run --prefetch && stack build
 
-container: build
+container: check-token build
 	cp $(stack_bin_dir)/slack-lambdabot $(docker)
-	cd $(docker) && docker build -t dfithian/slack-lambdabot:$(docker_tag) .
+	cd $(docker) && docker build -t $(IMAGE_NAME) --build-arg api_token=$(API_TOKEN) .
 
 publish: container
-	docker push dfithian/slack-lambdabot:$(docker_tag)
+	docker push $(IMAGE_NAME)
+
+check-token:
+ifndef API_TOKEN
+	$(error API_TOKEN is undefined)
+endif

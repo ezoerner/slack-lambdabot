@@ -5,5 +5,6 @@ RUN apt-get install -y libgmp10 ca-certificates netbase cabal-install ghc mueval
 RUN cabal update
 RUN cabal install random lambdabot-trusted containers bytestring base array
 COPY slack-lambdabot /
-ENV SLACK_API_TOKEN xoxb-111447402885-B7W7gCbVNj4lRlpPx5Nwh4rT
+ARG api_token
+ENV SLACK_API_TOKEN $api_token
 ENTRYPOINT ["/slack-lambdabot"]
