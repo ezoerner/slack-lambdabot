@@ -27,7 +27,7 @@ extra-deps:
 - oeis-0.3.8
 - prim-uniq-0.1.0.1
 - show-0.6
-- slack-api-0.10
+- slack-api-0.12
 - Stream-0.4.7.2
 - unlambda-0.1.4.2
 - wuss-1.1.1
