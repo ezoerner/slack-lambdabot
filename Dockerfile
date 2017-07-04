@@ -1,5 +1,4 @@
-ARG LBOT_IMAGE=ezoerner/lambdabot-cli:latest
-FROM $LBOT_IMAGE
+FROM ezoerner/lambdabot-cli:latest
 MAINTAINER Eric Zoerner
 COPY slack-lambdabot.cabal Setup.hs /root/
 COPY src /root/src
