@@ -26,7 +26,7 @@ import Modules (modulesInfo)
 import Prelude hiding (filter)
 import System.Environment (lookupEnv)
 import System.IO.Silently (capture)
-import Text.Parsec (anyChar, between, char, eof, many, noneOf, oneOf, optional,
+import Text.Parsec (anyChar, between, char, eof, many, noneOf, oneOf,
   parse, skipMany, skipMany1, string, try)
 import Text.Parsec.Text (Parser)
 import Web.Slack (Event(Message), SlackBot, SlackConfig(..), runBot)
@@ -40,6 +40,7 @@ import Web.Slack.Message (sendMessage)
 data Command where
   Eval :: !Text -> Command
   Type :: !Text -> Command
+  Other :: !Text -> Command
   deriving (Eq, Generic, NFData, Ord, Read, Show)
 
 -- | View the Haskell expression inside of a 'Command'.
@@ -47,22 +48,24 @@ expression :: Getter Command Text
 expression = to $ \case
   Eval expression' -> expression'
   Type expression' -> expression'
+  Other expression' -> expression'
 
 -- TODO(mroberts): Remove me.
 prefix :: Getter Command Text
 prefix = to $ \case
   Eval _ -> ">"
   Type _ -> "type"
+  Other _ -> ""
 
 -- | Parse a 'Command'.
 parseCommand :: Parser Command
-parseCommand = try parseEval <|> parseType where
+parseCommand = try parseEval <|> parseType <|> parseOther where
 
   -- | Parse an 'Eval' 'Command'.
   parseEval :: Parser Command
   parseEval
     =  skipMany spaceOrNewline
-    *> optional parsePrefix
+    *> parsePrefix
     *> (try (string ">")
    <|>  try (string "eval")
    <|>       string "run")
@@ -75,7 +78,7 @@ parseCommand = try parseEval <|> parseType where
   parseType :: Parser Command
   parseType
     =  skipMany spaceOrNewline
-    *> optional parsePrefix
+    *> parsePrefix
     *> (try (string "type")
    <|>       string "t")
     *> skipMany1 spaceOrNewline
@@ -83,11 +86,19 @@ parseCommand = try parseEval <|> parseType where
    <*  skipMany spaceOrNewline
    <*  eof
 
+     -- | Parse an 'Other' 'Command'.
+  parseOther :: Parser Command
+  parseOther
+    =  skipMany spaceOrNewline
+    *> parsePrefix
+    *> skipMany1 spaceOrNewline
+    *> (Other . pack <$> many anyChar)
+   <*  skipMany spaceOrNewline
+   <*  eof
+
   parsePrefix :: Parser Char
   parsePrefix
-    =  try (char ':')
-   <|> try (char '?')
-   <|>      char '@'
+    =  char '!'
 
   spaceOrNewline :: Parser Char
   spaceOrNewline = oneOf " \n"
