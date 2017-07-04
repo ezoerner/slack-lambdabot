@@ -1,6 +1,0 @@
-*.swp
-.cabal-sandbox
-cabal.sandbox.config
-dist
-.stack-work
-slack-lambdabot.cabal

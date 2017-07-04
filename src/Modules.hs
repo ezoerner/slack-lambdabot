@@ -4,6 +4,17 @@ module Modules (modulesInfo) where
 
 import Lambdabot.Main
 import Lambdabot.Plugin.Haskell
+import Lambdabot.Plugin.IRC
+import Lambdabot.Plugin.Misc
+import Lambdabot.Plugin.Novelty
+import Lambdabot.Plugin.Reference
+import Lambdabot.Plugin.Social
 
 modulesInfo :: Modules
-modulesInfo = $(modules $ corePlugins ++ haskellPlugins)
+modulesInfo = $(modules $ corePlugins
+    ++ haskellPlugins
+    ++ ["irc", "localtime", "topic"] -- ircPlugins
+    ++ ["dummy", "fresh", "todo"] -- miscPlugins
+    ++ ["bf", "dice", "elite", "filter", "quote", "slap", "unlambda", "vixen"] -- noveltyPlugins
+    ++ referencePlugins
+    ++ socialPlugins)
