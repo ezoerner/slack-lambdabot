@@ -1,7 +1,5 @@
 FROM fpco/stack-build:lts-8.20
 MAINTAINER Eric Zoerner
-RUN apt-get update -qq -y
-RUN apt-get install -y mueval
 COPY slack-lambdabot.cabal Setup.hs /root/
 COPY src /root/src
 WORKDIR /root

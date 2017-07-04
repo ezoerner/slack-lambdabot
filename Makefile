@@ -10,7 +10,7 @@ build: .check-token
 	docker build -t=$(IMAGE_NAME) --build-arg api_token=$(API_TOKEN) .
 
 run:
-	docker run -t $(IMAGE_NAME)
+	docker run -t --rm $(IMAGE_NAME)
 
 publish:
 	docker push $(IMAGE_NAME)
