@@ -1,3 +1,4 @@
+# edit the FROM to be your lambda-cli image
 FROM ezoerner/lambdabot-cli:latest
 MAINTAINER Eric Zoerner
 COPY slack-lambdabot.cabal Setup.hs /root/
