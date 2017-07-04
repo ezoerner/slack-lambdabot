@@ -32,7 +32,7 @@ Build the slack-lambdabot image:
     # if you are using the ezoerner/slack-lambdabot-cli image, leave out the
     # LB_CLI_IMAGE parameter
     cd <project root>
-    make API_TOKEN=<api_token> IMAGE_NAME=<username>/slack-lambdabot:<tag> LB_CLI_IMAGE=<username>/lambdabot-cli:<tag>
+    make IMAGE_NAME=<username>/slack-lambdabot:<tag> LB_CLI_IMAGE=<username>/lambdabot-cli:<tag>
 
 Running
 -------
@@ -40,7 +40,7 @@ Running
 Run the slack-lambdabot docker image:
 
 ```
-make run IMAGE_NAME=<username>/slack-lambdabot:<tag>
+make run API_TOKEN=<api_token> IMAGE_NAME=<username>/slack-lambdabot:<tag>
 ```
 
 Deploying

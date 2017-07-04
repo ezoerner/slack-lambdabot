@@ -2,16 +2,16 @@
 IMAGE_NAME ?= slack-lambdabot:local
 LB_CLI_IMAGE ?= ezoerner/lambdabot-cli:latest
 
-all: .check-token setup build
+all: setup build
 
 setup:
 	docker pull $(LB_CLI_IMAGE)
 
-build: .check-token
-	docker build -t=$(IMAGE_NAME) --build-arg api_token=$(API_TOKEN) .
+build:
+	docker build -t=$(IMAGE_NAME) .
 
-run:
-	docker run -t --rm $(IMAGE_NAME)
+run: .check-token
+	docker run --env SLACK_API_TOKEN=$(API_TOKEN) -t --rm $(IMAGE_NAME)
 
 publish:
 	docker push $(IMAGE_NAME)
