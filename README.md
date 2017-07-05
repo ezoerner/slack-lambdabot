@@ -43,6 +43,12 @@ Run the slack-lambdabot docker image:
 make run API_TOKEN=<api_token> IMAGE_NAME=<username>/slack-lambdabot:<tag>
 ```
 
+In Slack, add the user @lambdabot to your channel, or
+send a DM to it, then prefix commands with `!`, e.g.
+
+    !help run
+    run <expr>. You have Haskell, 3 seconds and no IO. Go nuts!
+
 Deploying
 ---------
 
