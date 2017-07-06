@@ -54,3 +54,45 @@ Deploying
 
 The image can be deployed anywhere the docker image can be run, e.g.
 AWS ECS, a Kubernetes platform, etc.
+
+
+Example lambdabot commands
+--------------------------
+
+!help run
+!run 1 + 1
+!> 1 + 1
+!> do { x <- [3..4]; [1..2]; return (x, 42)}
+!help undo
+!undo do { x <- [3..4]; [1..2]; return (x, 42)}
+
+!> [3 .. 4] >>= \ x -> [1 .. 2] >> return (x, 42)
+!do [3 .. 4] >>= \ x -> [1 .. 2] >> return (x, 42)
+!> take 1000000000 [1..1000000000]
+!> reverse "dog yM"
+!type foldl
+
+!help pl
+!pl \x y -> x + y
+!pl \f g x y -> f (g x y)
+
+!help pointy
+!pointy (.) . (.)
+
+!listmodules
+!list quote
+
+!help roll
+!roll 3d6
+!l33t The quick brown fox jumped over the lazy sleeping dog
+
+!hoogle dropWhile
+!hoogle (a -> Bool) -> [a] -> [a]
+
+!ticker NKE
+!nixon
+!pinky
+!brain
+!b52s
+
+!botsnack
