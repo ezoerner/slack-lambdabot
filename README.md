@@ -61,15 +61,14 @@ Example lambdabot commands
 
     !help run
     !run 1 + 1
-    !> 1 + 1
-    !> do { x <- [3..4]; [1..2]; return (x, 42)}
+    !run do { x <- [3..4]; [1..2]; return (x, 42)}
     !help undo
     !undo do { x <- [3..4]; [1..2]; return (x, 42)}
 
-    !> [3 .. 4] >>= \ x -> [1 .. 2] >> return (x, 42)
+    !run [3 .. 4] >>= \ x -> [1 .. 2] >> return (x, 42)
     !do [3 .. 4] >>= \ x -> [1 .. 2] >> return (x, 42)
-    !> take 1000000000 [1..1000000000]
-    !> reverse "dog yM"
+    !run take 1000000000 [1..1000000000]
+    !run reverse "dog yM"
     !type foldl
 
     !help pl
