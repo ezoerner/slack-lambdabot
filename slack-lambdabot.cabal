@@ -19,6 +19,7 @@ executable slack-lambdabot
       Modules
   build-depends:
       base
+      , deepseq
       , html-entities
       , text
       , lambdabot-core
@@ -29,6 +30,8 @@ executable slack-lambdabot
       , lambdabot-reference-plugins
       , lambdabot-social-plugins
       , lambdabot-trusted
+      , parsec
+      , lens
       , silently
       , slack-api >=0.12
       , transformers
