@@ -1,0 +1,6 @@
+[
+  {
+    "ParameterKey": "ServiceName",
+    "ParameterValue": "slack-lambdabot"
+  }
+]

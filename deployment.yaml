@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "slack-lambdabot"
+  labels:
+    app: slack-lambdabot
+    app_version: "0.4"
+spec:
+  replicas: 1
+  selector:
+    # How the Deployment finds which pods to manage.
+    matchLabels:
+      app: slack-lambdabot
+  template:
+    metadata:
+      labels:
+        app: slack-lambdabot
+    spec:
+      containers:
+      - name: slack-lambdabot 
+        image: "083124926037.dkr.ecr.us-west-2.amazonaws.com/nap/slack-lambdabot:0.4"
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: SLACK_API_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: nplus 
+              key: slack-api-token
